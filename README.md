@@ -1,3 +1,4 @@
+![My Profile Picture made by my sister](profilepicture.png)
 # Hi there, I'm Sahil Chopra! 👋
 
 Welcome to my GitHub profile! I'm a passionate young coder who loves bringing ideas to life through code. Here's a little about me:
