@@ -1,6 +1,7 @@
 <div align="center">
   <img src="profilepicture.jpeg" width="400">
 </div>
+
 # Hi there, I'm Sahil Chopra! 👋
 
 Welcome to my GitHub profile! I'm a passionate young coder who loves bringing ideas to life through code. Here's a little about me:
@@ -24,3 +25,10 @@ Feel free to reach out if:
 - choprasahil.sc@gmail.com
 
 Thanks for stopping by! 😄
+
+<div float="right"> 
+ 
+![Aunn's github stats](https://github-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark) 
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=aunncodes&layout=compact&theme=solarized-dark)
+</div>
+ <sub><sup><a href="https://github.com/anuraghazra/github-readme-stats">Thanks!</a></sub></sup>
