@@ -8,7 +8,7 @@
 - I love contributing to random repositories I find interesting!
 
 ## Want to Talk?
- - Fastest response would be through discord, aunn.exe.
+ - Fastest response would be through discord, at "aunn.exe".
  - I will also respond on email at choprasahil.sc@gmail.com!
 
 ## My Current Projects
