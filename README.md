@@ -8,7 +8,14 @@
 - I love contributing to random repositories I find interesting!
 
 ## Want to Talk?
- - choprasahil.sc@gmail.com
+ - Fastest response would be through discord, aunn.exe.
+ - I will also respond on email at choprasahil.sc@gmail.com!
+
+## My Current Projects
+ - Hypixel Skyblock Recreation by Swofty
+ - My Portfolio Website
+ - Other miscellaneous projects
+ - Have an interesting project? Show me!
 
 <div float="right"> 
   
