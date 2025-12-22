@@ -14,8 +14,10 @@
 ## My Current Projects
  - Hypixel Skyblock Recreation by Swofty
  - My Portfolio Website
+ - Factory Builder
  - Other miscellaneous projects
  - Have an interesting project? Show me!
+
 
 <div float="right"> 
   
