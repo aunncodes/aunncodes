@@ -21,7 +21,7 @@
 
 <div float="right"> 
   
-![Aunn's github stats](https://github-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark) 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=aunncodes&layout=compact&theme=solarized-dark)
+![Aunn's github stats](https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark) 
+![Top Langs](https://personal-readme-stats.vercel.app/api/top-langs/?username=aunncodes&layout=compact&theme=solarized-dark)
 </div>
 <sub><sup><a href="https://github.com/anuraghazra/github-readme-stats">Thanks!</a></sub></sup>
