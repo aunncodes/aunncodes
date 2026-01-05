@@ -11,101 +11,7 @@ const COUNTERAPI_TOKEN = process.env.COUNTERAPI_TOKEN;
 const COUNTERAPI_WORKSPACE = "sahil-cs-team-2377";
 const COUNTERAPI_COUNTER = "viewcounterawesome";
 
-const SVG_TEMPLATE = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1000" viewBox="0 0 900 1000">
-  <style>
-    .bg { fill: #0b0f14; }
-    .h1 { font: 800 44px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #e6edf3; }
-    .h2 { font: 650 20px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #c9d1d9; }
-    .label { font: 650 18px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; fill: #9aa4b2; }
-    .big { font: 900 84px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #e6edf3; }
-    .mid { font: 850 56px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #e6edf3; }
-    .contact { font: 600 14px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #e6edf3; }
-  </style>
-
-  <rect class="bg" width="900" height="1000" rx="16"/>
-
-
-  <g transform="translate(0, 0)">
-    <text x="450" y="90" class="h1" text-anchor="middle">
-      Hi, I&apos;m Sahil Chopra.
-    </text>
-  </g>
-
-  <g transform="translate(0, 180)">
-
-    <g transform="translate(150, 0)">
-      <text x="0" y="0" class="label" text-anchor="middle">Favorite language</text>
-
-      <g transform="translate(0, 90)">
-        <image
-          x="-30"
-          y="-50"
-          width="56"
-          height="56"
-          href="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg"
-          preserveAspectRatio="xMidYMid meet"
-        />
-      </g>
-    </g>
-
-    <g transform="translate(450, 0)">
-      <text x="0" y="0" class="label" text-anchor="middle">Years spent coding</text>
-      <text x="0" y="90" class="big" text-anchor="middle">{years}</text>
-    </g>
-
-    <g transform="translate(750, 0)">
-      <text x="0" y="0" class="label" text-anchor="middle">Repositories</text>
-      <text x="0" y="90" class="big" text-anchor="middle">{repos}</text>
-    </g>
-
-  </g>
-  <image
-    x="300"
-    y="350"
-    width="300"
-    height="300"
-    href="https://raw.githubusercontent.com/aunncodes/aunncodes/main/profilepicture.jpeg"
-    preserveAspectRatio="xMidYMid slice"
-    clip-path="url(#avatarClip)"
-  />
-
-
-
-  <g transform="translate(230, 680)">
-    <a href="https://discord.com/">
-      <rect x="0" y="0" width="200" height="46" rx="14" fill="#161b22"/>
-      <text x="100" y="30" class="contact" text-anchor="middle">
-        Discord: {discord}
-      </text>
-    </a>
-
-    <a href="mailto:{email}">
-      <rect x="240" y="0" width="200" height="46" rx="14" fill="#161b22"/>
-      <text x="340" y="30" class="contact" text-anchor="middle">
-        Email
-      </text>
-    </a>
-  </g>
-
-
-  <image
-    x="20"
-    y="780"
-    width="420"
-    height="200"
-    href="https://personal-readme-stats.vercel.app/api?username={github}&amp;show_icons=true&amp;theme=solarized-dark"
-    preserveAspectRatio="xMidYMid meet"
-  />
-  <image
-    x="460"
-    y="780"
-    width="420"
-    height="200"
-    href="https://personal-readme-stats.vercel.app/api/top-langs/?username={github}&amp;layout=compact&amp;theme=solarized-dark"
-    preserveAspectRatio="xMidYMid meet"
-  />
-</svg>
-`
+const SVG_TEMPLATE_URL = "https://raw.githubusercontent.com/aunncodes/aunncodes/main/readme.template.svg";
 
 let cachedRepos: { value: number; fetchedAt: number } | null = null;
 const REPOS_CACHE_MS = 60 * 60 * 1000;
@@ -134,6 +40,19 @@ async function getPublicRepoCount(username: string): Promise<number> {
   } catch {
     return cachedRepos?.value ?? 0;
   }
+}
+
+let svgTemplatePromise: Promise<string> | null = null;
+function getSvgTemplate(): Promise<string> {
+  if (!svgTemplatePromise) {
+    svgTemplatePromise = fetch(SVG_TEMPLATE_URL).then(async (res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to fetch SVG template: ${res.status}`);
+      }
+      return await res.text();
+    });
+  }
+  return svgTemplatePromise;
 }
 
 type CounterApiResponse = {
@@ -185,8 +104,9 @@ export default async function handler(req: Request): Promise<Response> {
   const views = await incrementAndGetViews();
 
   const repos = await getPublicRepoCount(GITHUB_USERNAME);
+  const svgText = await getSvgTemplate();
 
-  const svg = SVG_TEMPLATE
+  const svg = svgText
     .replace("{title}", TITLE)
     .replace("{years}", yearsCoding().toString())
     .replace("{repos}", repos.toString())
