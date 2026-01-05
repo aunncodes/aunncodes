@@ -42,7 +42,7 @@ async function getPublicRepoCount(username: string): Promise<number> {
 
 let svgTemplatePromise: Promise<string> | null = null;
 function getSvgTemplate(): Promise<string> {
-  if (!svgTemplatePromise) svgTemplatePromise = Bun.file("../readme.template.svg").text();
+  if (!svgTemplatePromise) svgTemplatePromise = Bun.file("readme.template.svg").text();
   return svgTemplatePromise;
 }
 
