@@ -1,3 +1,5 @@
+import { kv } from "@vercel/kv";
+
 const TITLE = "Hi, I'm Sahil Chopra.";
 const START_CODING_YEAR = 2016;
 
@@ -7,11 +9,21 @@ const GITHUB_USERNAME = "aunncodes";
 
 const yearsCoding = () => new Date().getFullYear() - START_CODING_YEAR;
 
-const COUNTERAPI_TOKEN = process.env.COUNTERAPI_TOKEN;
-const COUNTERAPI_WORKSPACE = "sahil-cs-team-2377";
-const COUNTERAPI_COUNTER = "viewcounterawesome";
-
 const SVG_TEMPLATE_URL = "https://raw.githubusercontent.com/aunncodes/aunncodes/main/readme.template.svg";
+
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit = {},
+  timeoutMs = 2500
+): Promise<Response> {
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(t);
+  }
+}
 
 let cachedRepos: { value: number; fetchedAt: number } | null = null;
 const REPOS_CACHE_MS = 60 * 60 * 1000;
@@ -23,17 +35,21 @@ async function getPublicRepoCount(username: string): Promise<number> {
   }
 
   try {
-    const res = await fetch(`https://api.github.com/users/${username}`, {
-      headers: {
-        "User-Agent": "readme-card",
-        "Accept": "application/vnd.github+json",
+    const res = await fetchWithTimeout(
+      `https://api.github.com/users/${username}`,
+      {
+        headers: {
+          "User-Agent": "readme-card",
+          "Accept": "application/vnd.github+json",
+        },
       },
-    });
+      2500
+    );
 
     if (!res.ok) throw new Error(`GitHub API failed: ${res.status}`);
 
     const data = await res.json();
-    const count = typeof data.public_repos === "number" ? data.public_repos : 0;
+    const count = data.public_repos;
 
     cachedRepos = { value: count, fetchedAt: now };
     return count;
@@ -45,66 +61,30 @@ async function getPublicRepoCount(username: string): Promise<number> {
 let svgTemplatePromise: Promise<string> | null = null;
 function getSvgTemplate(): Promise<string> {
   if (!svgTemplatePromise) {
-    svgTemplatePromise = fetch(SVG_TEMPLATE_URL).then(async (res) => {
-      if (!res.ok) {
-        throw new Error(`Failed to fetch SVG template: ${res.status}`);
-      }
+    svgTemplatePromise = (async () => {
+      const res = await fetchWithTimeout(SVG_TEMPLATE_URL, {}, 2500);
+      if (!res.ok) throw new Error(`Failed to fetch SVG template: ${res.status}`);
       return await res.text();
-    });
+    })();
   }
   return svgTemplatePromise;
 }
 
-type CounterApiResponse = {
-  code?: string;
-  data?: {
-    up_count?: number;
-  };
-};
-
-function counterHeaders(): HeadersInit {
-  const headers: Record<string, string> = { "Accept": "application/json" };
-  if (COUNTERAPI_TOKEN) headers["Authorization"] = `Bearer ${COUNTERAPI_TOKEN}`;
-  return headers;
-}
-
-function extractUpCount(json: unknown): number | null {
-  const obj = json as CounterApiResponse;
-  const up = obj?.data?.up_count;
-  return typeof up === "number" ? up : null;
-}
-
 async function incrementAndGetViews(): Promise<number> {
-  if (!COUNTERAPI_TOKEN) return 0;
-
-  const base = `https://api.counterapi.dev/v2/${encodeURIComponent(COUNTERAPI_WORKSPACE)}/${encodeURIComponent(COUNTERAPI_COUNTER)}`;
-
   try {
-    const upRes = await fetch(`${base}/up`, {
-      method: "GET",
-      headers: counterHeaders(),
-    });
-    if (!upRes.ok) throw new Error(`CounterAPI up failed: ${upRes.status}`);
-
-    const upJson = await upRes.json();
-    const upCount = extractUpCount(upJson);
-    if (upCount !== null) return upCount;
-
-    const getRes = await fetch(base, { headers: counterHeaders() });
-    if (!getRes.ok) throw new Error(`CounterAPI get failed: ${getRes.status}`);
-
-    const getJson = await getRes.json();
-    return extractUpCount(getJson) ?? 0;
+    const next = await kv.incr("readme:views");
+    return next;
   } catch {
     return 0;
   }
 }
 
 export default async function handler(req: Request): Promise<Response> {
-  const views = await incrementAndGetViews();
-
-  const repos = await getPublicRepoCount(GITHUB_USERNAME);
-  const svgText = await getSvgTemplate();
+  const [views, repos, svgText] = await Promise.all([
+    incrementAndGetViews(),
+    getPublicRepoCount(GITHUB_USERNAME),
+    getSvgTemplate(),
+  ]);
 
   const svg = svgText
     .replace("{title}", TITLE)
