@@ -1,27 +1,3 @@
 <div align="center">
-  <img src="profilepicture.jpeg" width="400">
+    <img src="https://something.vercel.com/api/readme" alt="Looks like my readme card is broken. Welp, sucks to suck!" />
 </div>
-
-# Hey! I'm Sahil Chopra!
-- I've been coding for 10 years, and my journey began with Python, which remains my favorite language.
-- I love web development, automation, and anything Python-related.
-- I love contributing to random repositories I find interesting!
-
-## Want to Talk?
- - Fastest response would be through discord, at "aunn.exe".
- - I will also respond on email at choprasahil.sc@gmail.com!
-
-## My Current Projects
- - Hypixel Skyblock Recreation by Swofty
- - My Portfolio Website
- - Factory Builder
- - Other miscellaneous projects
- - Have an interesting project? Show me!
-
-
-<div float="right"> 
-  
-![Aunn's github stats](https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark) 
-![Top Langs](https://personal-readme-stats.vercel.app/api/top-langs/?username=aunncodes&layout=compact&theme=solarized-dark)
-</div>
-<sub><sup><a href="https://github.com/anuraghazra/github-readme-stats">Thanks!</a></sub></sup>
