@@ -20,8 +20,11 @@
 
 
 <div float="right"> 
-  
-![Aunn's github stats](https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark) 
+
+![Visitors](https://api.visitorbadge.io/api/visitors?path=github.com%2Faunncodes&countColor=%23263759)
+
+![Aunn's github stats](https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark)
 ![Top Langs](https://personal-readme-stats.vercel.app/api/top-langs/?username=aunncodes&layout=compact&theme=solarized-dark)
+
 </div>
 <sub><sup><a href="https://github.com/anuraghazra/github-readme-stats">Thanks!</a></sub></sup>
