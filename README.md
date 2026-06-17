@@ -12,9 +12,10 @@
  - I will also respond on email at choprasahil.sc@gmail.com!
 
 ## My Current Projects
- - Hypixel Skyblock Recreation by Swofty
+ - Homebase Chrome Extension
+ - Town of Salem Recreation
+ - Aboutlet
  - My Portfolio Website
- - Factory Builder
  - Other miscellaneous projects
  - Have an interesting project? Show me!
 
