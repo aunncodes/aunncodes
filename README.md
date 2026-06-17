@@ -1,31 +1,41 @@
-<div align="center">
-  <img src="profilepicture.jpeg" width="400">
-</div>
+<p align="center">
+  <img src="./assets/title.svg" alt="Animated terminal header for Sahil Chopra" />
+</p>
 
 # Hey! I'm Sahil Chopra!
+
 - I've been coding for 10 years, and my journey began with Python, which remains my favorite language.
 - I love web development, automation, and anything Python-related.
 - I love contributing to random repositories I find interesting!
 
 ## Want to Talk?
- - Fastest response would be through discord, at "aunn.exe".
- - I will also respond on email at choprasahil.sc@gmail.com!
+
+- Fastest response would be through discord, at "aunn.exe".
+- I will also respond on email at choprasahil.sc@gmail.com!
 
 ## My Current Projects
- - Homebase Chrome Extension
- - Town of Salem Recreation
- - Aboutlet
- - My Portfolio Website
- - Other miscellaneous projects
- - Have an interesting project? Show me!
 
+- Homebase Chrome Extension
+- Town of Salem Recreation
+- Aboutlet
+- My Chess AI
+- Other miscellaneous projects
+- Have an interesting project? Show me!
 
-<div float="right"> 
+## GitHub Activity
 
-![Visitors](https://api.visitorbadge.io/api/visitors?path=github.com%2Faunncodes&countColor=%23263759)
+<p align="center">
+  <img src="./assets/contributions.png" alt="My GitHub contributions" />
+</p>
 
-![Aunn's github stats](https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark)
-![Top Langs](https://personal-readme-stats.vercel.app/api/top-langs/?username=aunncodes&layout=compact&theme=solarized-dark)
+<p align="center">
+  <img src="https://api.visitorbadge.io/api/visitors?path=github.com%2Faunncodes&countColor=%23263759" alt="Visitors" />
+</p>
 
-</div>
-<sub><sup><a href="https://github.com/anuraghazra/github-readme-stats">Thanks!</a></sub></sup>
+<p align="center">
+  <img src="https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=solarized-dark" alt="Aunn's github stats" />
+</p>
+
+<p align="center">
+  <sub><sup><a href="https://github.com/anuraghazra/github-readme-stats">Thanks!</a></sup></sub>
+</p>
