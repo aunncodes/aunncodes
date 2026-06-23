@@ -3,7 +3,6 @@ import html
 import re
 from io import BytesIO
 from pathlib import Path
-
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw, ImageFont
@@ -33,7 +32,7 @@ LEVELS = (
 
 VISITOR_BADGE_URL = "https://api.visitorbadge.io/api/visitors?path=github.com%2Faunncodes&countColor=%23263759"
 
-STATS_CARD_URL = "https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=blue_navy&disable_animations=true"
+STATS_CARD_URL = "https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=blue_navy"
 
 
 def font(size, bold=False):
@@ -206,17 +205,86 @@ def replace_href(svg, image_id, href):
 
     return svg
 
+def attrs_from_image(svg, image_id):
+    match = re.search(
+        rf'<image\b(?=[^>]*\bid="{re.escape(image_id)}")[^>]*>',
+        svg,
+    )
+
+    if not match:
+        raise SystemExit(f'Could not find image with id="{image_id}".')
+
+    tag = match.group(0)
+
+    attrs = {}
+
+    for name in ("x", "y", "width", "height", "preserveAspectRatio"):
+        attr_match = re.search(rf'\b{name}="([^"]*)"', tag)
+
+        if attr_match:
+            attrs[name] = attr_match.group(1)
+
+    return tag, attrs
+
+
+def inline_svg(svg, image_id, svg_text):
+    block_pattern = (
+        rf"<!-- {re.escape(image_id)}:start -->"
+        rf".*?"
+        rf"<!-- {re.escape(image_id)}:end -->"
+    )
+
+    block_match = re.search(block_pattern, svg, flags=re.S)
+
+    if not block_match:
+        raise SystemExit(f'Could not find block for "{image_id}".')
+
+    old_block = block_match.group(0)
+    old_tag_match = re.search(r"<image\b[^>]*>", old_block)
+
+    if not old_tag_match:
+        old_tag_match = re.search(r"<svg\b[^>]*>", old_block)
+
+    if not old_tag_match:
+        raise SystemExit(f'Could not find placeholder for "{image_id}".')
+
+    old_tag = old_tag_match.group(0)
+    attrs = {}
+
+    for name in ("x", "y", "width", "height", "preserveAspectRatio"):
+        attr_match = re.search(rf'\b{name}="([^"]*)"', old_tag)
+
+        if attr_match:
+            attrs[name] = attr_match.group(1)
+
+    svg_text = re.sub(r"<\?xml[^>]*>\s*", "", svg_text)
+    svg_text = re.sub(r"<!DOCTYPE[^>]*>\s*", "", svg_text)
+
+    soup = BeautifulSoup(svg_text, "html.parser")
+    fetched_svg = soup.svg
+
+    if not fetched_svg:
+        raise SystemExit(f'Fetched SVG for "{image_id}" was invalid.')
+
+    fetched_svg["id"] = image_id
+
+    for name, value in attrs.items():
+        fetched_svg[name] = value
+
+    new_block = f"<!-- {image_id}:start -->\n{fetched_svg}\n<!-- {image_id}:end -->"
+
+    return svg.replace(old_block, new_block, 1)
 
 def main():
     svg = README_SVG.read_text(encoding="utf-8")
 
     contributions = data_uri(generate_contribution_png(), "image/png")
-    visitors = data_uri(fetch(VISITOR_BADGE_URL), "image/svg+xml")
-    stats = data_uri(fetch(STATS_CARD_URL), "image/svg+xml")
+    visitors = fetch(VISITOR_BADGE_URL).decode("utf-8")
+    stats = fetch(STATS_CARD_URL).decode("utf-8")
 
     svg = replace_href(svg, "contributions-img", contributions)
-    svg = replace_href(svg, "visitor-badge", visitors)
-    svg = replace_href(svg, "stats-card", stats)
+    svg = inline_svg(svg, "visitor-badge", visitors)
+    svg = inline_svg(svg, "stats-card", stats)
 
     README_SVG.write_text(svg, encoding="utf-8")
 
