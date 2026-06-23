@@ -31,15 +31,9 @@ LEVELS = (
     (114, 209, 255),
 )
 
-VISITOR_BADGE_URL = (
-    "https://api.visitorbadge.io/api/visitors"
-    "?path=github.com%2Faunncodes&countColor=%23263759"
-)
+VISITOR_BADGE_URL = "https://api.visitorbadge.io/api/visitors?path=github.com%2Faunncodes&countColor=%23263759"
 
-STATS_CARD_URL = (
-    "https://personal-readme-stats.vercel.app/api"
-    "?username=aunncodes&show_icons=true&theme=blue_navy"
-)
+STATS_CARD_URL = "https://personal-readme-stats.vercel.app/api?username=aunncodes&show_icons=true&theme=blue_navy&disable_animations=true"
 
 
 def font(size, bold=False):
