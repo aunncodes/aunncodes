@@ -1,0 +1,94 @@
+<svg width="900" height="1360" viewBox="0 0 900 1360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="900" y2="1360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06101f" />
+      <stop offset="0.48" stop-color="#082746" />
+      <stop offset="1" stop-color="#020814" />
+    </linearGradient>
+    <linearGradient id="panelBg" x1="0" y1="0" x2="900" y2="1360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#071a30" stop-opacity="0.97" />
+      <stop offset="1" stop-color="#031020" stop-opacity="0.97" />
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <clipPath id="clipHandle">
+      <rect x="145" y="103" width="0" height="54">
+        <animate attributeName="width" dur="8s" repeatCount="indefinite" values="0;230;230;0;0;0" keyTimes="0;0.20;0.36;0.50;0.99;1" />
+      </rect>
+    </clipPath>
+    <clipPath id="clipName">
+      <rect x="145" y="103" width="0" height="54">
+        <animate attributeName="width" dur="8s" repeatCount="indefinite" values="0;0;0;310;310;0;0" keyTimes="0;0.50;0.54;0.72;0.86;0.98;1" />
+      </rect>
+    </clipPath>
+  </defs>
+
+  <style>
+    .page-bg { fill: url(#pageBg); }
+    .shell { fill: url(#panelBg); stroke: #268bd2; stroke-width: 1.6; }
+    .bg { fill: #04111f; }
+    .frame { fill: none; stroke: #268bd2; stroke-width: 2; }
+    .prompt { font: 600 26px 'JetBrains Mono', 'Fira Code', Consolas, monospace; fill: #64c7ff; }
+    .typed { font: 700 42px 'JetBrains Mono', 'Fira Code', Consolas, monospace; fill: #a9e6ff; filter: url(#softGlow); }
+    .dim { fill: #5aa7d7; }
+    .cursor { fill: #a9e6ff; filter: url(#softGlow); animation: blink 0.75s steps(1) infinite; }
+    .section-title { font: 800 26px 'JetBrains Mono', 'Fira Code', Consolas, monospace; fill: #4db8ff; letter-spacing: 0.2px; }
+    .body { font: 500 16px 'JetBrains Mono', 'Fira Code', Consolas, monospace; fill: #d5e8f7; }
+    .card { fill: rgba(4, 17, 31, 0.58); stroke: #1d78bd; stroke-width: 1.3; }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+
+  <rect class="page-bg" x="0" y="0" width="900" height="1360" rx="22" />
+  <rect class="shell" x="18" y="18" width="864" height="1324" rx="20" />
+
+  <g id="terminal-header" transform="translate(0 34)">
+    <rect class="bg" x="42" y="0" width="816" height="220" rx="22" />
+    <rect class="frame" x="66" y="24" width="768" height="172" rx="16" />
+
+    <text x="76" y="87" class="prompt"><tspan class="dim">sahil@github</tspan>:~$ whoami</text>
+    <text x="145" y="145" class="typed" clip-path="url(#clipHandle)">aunncodes</text>
+    <text x="145" y="145" class="typed" clip-path="url(#clipName)">Sahil Chopra</text>
+
+    <rect class="cursor" x="145" y="108" width="18" height="45">
+      <animate attributeName="x" dur="8s" repeatCount="indefinite" values="145;375;375;145;145;455;455;145;145" keyTimes="0;0.20;0.36;0.50;0.54;0.72;0.86;0.98;1" />
+    </rect>
+  </g>
+
+  <g id="bio" transform="translate(72 300)">
+    <text class="section-title" x="0" y="0">Hey! I'm Sahil Chopra!</text>
+    <text class="body" x="0" y="36">- I've been coding for 10 years, and my journey began with Python,</text>
+    <text class="body" x="24" y="62">which remains my favorite language.</text>
+    <text class="body" x="0" y="92">- I love web development, automation, and anything Python-related.</text>
+    <text class="body" x="0" y="122">- I love contributing to random repositories I find interesting!</text>
+
+    <text class="section-title" x="0" y="184">Want to Talk?</text>
+    <text class="body" x="0" y="220">- Fastest response would be through discord, at "aunn.exe".</text>
+    <text class="body" x="0" y="250">- I will also respond on email at choprasahil.sc@gmail.com!</text>
+
+    <text class="section-title" x="0" y="312">My Current Projects</text>
+    <text class="body" x="0" y="348">- Homebase Chrome Extension</text>
+    <text class="body" x="0" y="378">- Town of Salem Recreation</text>
+    <text class="body" x="0" y="408">- Aboutlet</text>
+    <text class="body" x="0" y="438">- My Chess AI</text>
+    <text class="body" x="0" y="468">- Other miscellaneous projects</text>
+    <text class="body" x="0" y="498">- Have an interesting project? Show me!</text>
+  </g>
+
+  <line x1="72" y1="832" x2="828" y2="832" stroke="#1d78bd" stroke-width="1" opacity="0.85" />
+
+  <g id="activity" transform="translate(60 872)">
+    <text class="section-title" x="0" y="0">GitHub Activity</text>
+    <image x="648.25" y="-25" width="131.75" height="28" preserveAspectRatio="xMidYMid meet" href="https://api.visitorbadge.io/api/visitors?path=github.com%2Faunncodes&amp;countColor=%23263759" />
+
+    <rect class="card" x="0" y="26" width="780" height="195" rx="10" />
+    <image x="0" y="26" width="780" height="195" preserveAspectRatio="xMidYMid meet" href="https://raw.githubusercontent.com/aunncodes/aunncodes/refs/heads/main/assets/contributions.png" />
+
+    <rect class="card" x="156.5" y="245" width="467" height="195" rx="8" />
+    <image x="156.5" y="245" width="467" height="195" preserveAspectRatio="xMidYMid meet" href="https://personal-readme-stats.vercel.app/api?username=aunncodes&amp;show_icons=true&amp;theme=blue_navy" />
+  </g>
+</svg>
