@@ -1,4 +1,4 @@
-name: Update contribution image
+name: Update README SVG assets
 
 on:
   schedule:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  update-contributions:
+  update-svg:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,19 +24,19 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r scripts/requirements.txt
 
-      - name: Generate contribution image
-        run: python scripts/contributions.py
+      - name: Inline assets
+        run: python scripts/inline_assets.py
 
-      - name: Commit updated image
+      - name: Commit updated README SVG
         run: |
-          if git diff --quiet -- assets/contributions.png; then
-            echo "Same image"
+          if git diff --quiet -- assets/readme.svg; then
+            echo "Same SVG"
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add assets/contributions.png
-          git commit -m "Update contribution image"
+          git add assets/readme.svg
+          git commit -m "Update README SVG assets"
           git push

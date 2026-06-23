@@ -1,16 +1,21 @@
-# Credit to https://github.com/ArikSquad/cover-generator for like all of this code
-
+import base64
+import html
 import re
+from io import BytesIO
 from pathlib import Path
+
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw, ImageFont
 
+
 USERNAME = "aunncodes"
 NAME = "Aunn"
-OUTPUT = Path("assets/contributions.png")
+
+README_SVG = Path("assets/readme.svg")
 
 WIDTH, HEIGHT = 1584, 396
+
 TOTAL_RE = re.compile(r"([\d,]+)\s+contributions?\s+in\s+the\s+last\s+year", re.I)
 MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
@@ -18,11 +23,27 @@ BG = (10, 18, 29, 255)
 TEXT = (238, 246, 255, 180)
 MUTED = (146, 169, 193, 255)
 LINE = (255, 255, 255, 18)
-LEVELS = ((26, 36, 50), (32, 78, 112), (40, 113, 160), (59, 153, 214), (114, 209, 255))
+LEVELS = (
+    (26, 36, 50),
+    (32, 78, 112),
+    (40, 113, 160),
+    (59, 153, 214),
+    (114, 209, 255),
+)
+
+VISITOR_BADGE_URL = (
+    "https://api.visitorbadge.io/api/visitors"
+    "?path=github.com%2Faunncodes&countColor=%23263759"
+)
+
+STATS_CARD_URL = (
+    "https://personal-readme-stats.vercel.app/api"
+    "?username=aunncodes&show_icons=true&theme=blue_navy"
+)
 
 
 def font(size, bold=False):
-    candidates = [ # should support linux, windows, and mac
+    candidates = [
         "/usr/share/fonts/inter/InterVariable.ttf",
         "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf" if bold else "/usr/share/fonts/opentype/inter/InterDisplay-Regular.otf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
@@ -34,13 +55,11 @@ def font(size, bold=False):
     ]
 
     for path in candidates:
-        if not path or not Path(path).exists():
-            continue
-
-        try:
-            return ImageFont.truetype(path, size)
-        except OSError:
-            continue
+        if Path(path).exists():
+            try:
+                return ImageFont.truetype(path, size)
+            except OSError:
+                pass
 
     return ImageFont.load_default()
 
@@ -49,18 +68,13 @@ def parse_rects(soup):
     cells = []
 
     for rect in soup.find_all("rect"):
-        if not rect.has_attr("data-date") or not rect.has_attr("data-count"):
-            continue
-
-        try:
+        if rect.has_attr("data-date") and rect.has_attr("data-count"):
             cells.append({
                 "x": int(float(rect.get("x", "0"))),
                 "y": int(float(rect.get("y", "0"))),
-                "date": str(rect["data-date"]),
+                "date": rect["data-date"],
                 "level": max(0, min(4, int(rect.get("data-level", "0")))),
             })
-        except (TypeError, ValueError, KeyError):
-            continue
 
     return cells
 
@@ -71,23 +85,19 @@ def parse_table(soup):
     for row_index, row in enumerate(soup.select("table.ContributionCalendar-grid tr")):
         for col_index, cell in enumerate(row.select("td.ContributionCalendar-day")):
             date = cell.get("data-date")
-            if not date:
-                continue
 
-            try:
+            if date:
                 cells.append({
                     "x": col_index,
                     "y": max(0, row_index - 1),
-                    "date": str(date),
+                    "date": date,
                     "level": max(0, min(4, int(cell.get("data-level", "0")))),
                 })
-            except (TypeError, ValueError):
-                continue
 
     return cells
 
 
-def main():
+def generate_contribution_png():
     response = requests.get(
         f"https://github.com/users/{USERNAME}/contributions",
         headers={
@@ -98,16 +108,13 @@ def main():
     )
     response.raise_for_status()
 
-    html = response.text
-    soup = BeautifulSoup(html, "html.parser")
+    page = response.text
+    soup = BeautifulSoup(page, "html.parser")
 
-    total_match = TOTAL_RE.search(html)
+    total_match = TOTAL_RE.search(page)
     total = int(total_match.group(1).replace(",", "")) if total_match else 0
 
-    cells = parse_rects(soup)
-
-    if not cells:
-        cells = parse_table(soup)
+    cells = parse_rects(soup) or parse_table(soup)
 
     if not cells:
         raise SystemExit(f"Could not parse contributions for {USERNAME}.")
@@ -124,7 +131,6 @@ def main():
     for cell in cells:
         row = y_index[cell["y"]]
         col = x_index[cell["x"]]
-
         grid[row][col] = cell["level"]
         dates[row][col] = cell["date"]
 
@@ -148,7 +154,6 @@ def main():
 
     origin_x, origin_y = 300, 128
     cell_size, gap = 18, 5
-
     previous_month = None
 
     for col, month in enumerate(months):
@@ -168,10 +173,60 @@ def main():
                 fill=(*LEVELS[level], 255),
             )
 
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    image.convert("RGB").save(OUTPUT, optimize=True)
+    output = BytesIO()
+    image.convert("RGB").save(output, format="PNG", optimize=True)
+    return output.getvalue()
 
-    print(f"Wrote {OUTPUT}")
+
+def fetch(url):
+    response = requests.get(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (compatible; ReadmeAssetInliner/1.0)",
+            "Accept": "image/svg+xml,image/*,*/*",
+        },
+        timeout=20,
+    )
+    response.raise_for_status()
+    return response.content
+
+
+def data_uri(data, mime):
+    encoded = base64.b64encode(data).decode("ascii")
+    return f"data:{mime};base64,{encoded}"
+
+
+def replace_href(svg, image_id, href):
+    href = html.escape(href, quote=True)
+
+    pattern = (
+        rf'(<image\b(?=[^>]*\bid="{re.escape(image_id)}")[^>]*\bhref=")'
+        rf'[^"]*'
+        rf'("[^>]*>)'
+    )
+
+    svg, count = re.subn(pattern, rf"\1{href}\2", svg, count=1)
+
+    if count != 1:
+        raise SystemExit(f'Could not find image with id="{image_id}".')
+
+    return svg
+
+
+def main():
+    svg = README_SVG.read_text(encoding="utf-8")
+
+    contributions = data_uri(generate_contribution_png(), "image/png")
+    visitors = data_uri(fetch(VISITOR_BADGE_URL), "image/svg+xml")
+    stats = data_uri(fetch(STATS_CARD_URL), "image/svg+xml")
+
+    svg = replace_href(svg, "contributions-img", contributions)
+    svg = replace_href(svg, "visitor-badge", visitors)
+    svg = replace_href(svg, "stats-card", stats)
+
+    README_SVG.write_text(svg, encoding="utf-8")
+
+    print(f"Updated {README_SVG}")
 
 
 if __name__ == "__main__":
